@@ -1,0 +1,16 @@
+{
+	"name": "visol/ipauthtrigger",
+	"type": "typo3-cms-extension",
+	"description": "A TYPO3 frontend plugin triggering the IP Authentication (from aeo_ipauth) if the user is in a certain IP range",
+	"homepage": "https://github.com/visol/ext-ipauthtrigger",
+	"license": ["GPL-2.0-or-later"],
+	"require": {
+		"typo3/cms": ">=8.7.0",
+		"aoe/aoe_ipauth": "^1.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"Visol\\Ipauthtrigger\\": "Classes"
+		}
+	}
+}

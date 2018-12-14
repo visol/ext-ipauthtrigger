@@ -1,0 +1,11 @@
+plugin.tx_ipauthtrigger {
+    view {
+        templateRootPath = {$plugin.tx_ipauthtrigger.view.templateRootPath}
+        partialRootPath = {$plugin.tx_ipauthtrigger.view.partialRootPath}
+        layoutRootPath = {$plugin.tx_ipauthtrigger.view.layoutRootPath}
+    }
+
+    persistence {
+        storagePid = {$plugin.tx_ipauthtrigger.persistence.storagePid}
+    }
+}
