@@ -1,6 +1,6 @@
 <?php
 
-namespace Visol\Ipauthttrigger\Controller;
+namespace Visol\Ipauthtrigger\Controller;
 
 /**
  * This file is part of the TYPO3 CMS project.
