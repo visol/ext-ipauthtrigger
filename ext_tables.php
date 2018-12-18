@@ -8,7 +8,13 @@ if (!defined('TYPO3_MODE')) {
     'Ipauthtrigger',
     'IP Authentication Trigger'
 );
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['ipauthtrigger_ipauthtrigger'] = 'recursive,select_key,pages';
+$pluginSignature = str_replace('_', '', $_EXTKEY) . '_ipauthtrigger';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'select_key,pages, recursive';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    $pluginSignature,
+    'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/flexform_authentication.xml'
+);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     $_EXTKEY,

@@ -44,7 +44,14 @@ class AuthenticationController extends ActionController
             if (count($users)) {
                 $requestUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
                 $queryStringSeparator = !strpos($requestUrl, '?') ? '?' : '&';
-                HttpUtility::redirect($requestUrl . $queryStringSeparator . 'logintype=login');
+                $targetUrl = $requestUrl . $queryStringSeparator . 'logintype=login';
+
+                $configuredRedirectPage = $this->getConfiguredRedirectPage();
+                if (empty($redirectUrl) && !empty($configuredRedirectPage)) {
+                    $targetUrl = $this->uriBuilder->setTargetPageUid((int)$configuredRedirectPage)->setCreateAbsoluteUri(true)->setLinkAccessRestrictedPages(true)->setArguments(['logintype' => 'login'])->setUseCacheHash(false)->build();
+                }
+
+                HttpUtility::redirect($targetUrl);
             } else {
                 if ($this->settings['debugMode']) {
                     // Set plugin.tx_ipauthtrigger.settings.debugMode = 1 if you want to display
@@ -62,6 +69,15 @@ class AuthenticationController extends ActionController
                 }
             }
         }
+    }
+
+    protected function getConfiguredRedirectPage()
+    {
+        $configuredRedirectPage = null;
+        if (array_key_exists('redirectPage', $this->settings) && !empty($this->settings['redirectPage'])) {
+            $configuredRedirectPage = $this->settings['redirectPage'];
+        }
+        return $configuredRedirectPage;
     }
 
     /**
