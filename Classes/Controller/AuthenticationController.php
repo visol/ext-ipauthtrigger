@@ -15,7 +15,6 @@ namespace Visol\Ipauthtrigger\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use AOE\AoeIpauth\Domain\Service\FeEntityService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -25,13 +24,14 @@ class AuthenticationController extends ActionController
 {
 
     /**
-     * @var \AOE\AoeIpauth\Domain\Service\FeEntityService
+     * @var \Visol\Ipauthtrigger\Service\AuthenticationService
+     * @inject
      */
-    protected $feEntityService = null;
+    protected $authenticationService = null;
 
     /**
-     * @throws StopActionException
      * @return void
+     * @throws StopActionException
      */
     public function indexAction()
     {
@@ -40,7 +40,7 @@ class AuthenticationController extends ActionController
             throw new StopActionException;
         } else {
             $ip = GeneralUtility::getIndpEnv('REMOTE_ADDR');
-            $users = $this->findAllUsersByIpAuthentication($ip);
+            $users = $this->authenticationService->findAllUsersByIpAuthentication($ip);
             if (count($users)) {
                 $requestUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
                 $queryStringSeparator = !strpos($requestUrl, '?') ? '?' : '&';
@@ -48,7 +48,11 @@ class AuthenticationController extends ActionController
 
                 $configuredRedirectPage = $this->getConfiguredRedirectPage();
                 if (empty($redirectUrl) && !empty($configuredRedirectPage)) {
-                    $targetUrl = $this->uriBuilder->setTargetPageUid((int)$configuredRedirectPage)->setCreateAbsoluteUri(true)->setLinkAccessRestrictedPages(true)->setArguments(['logintype' => 'login'])->setUseCacheHash(false)->build();
+                    $targetUrl = $this->uriBuilder->setTargetPageUid(
+                        (int)$configuredRedirectPage
+                    )->setCreateAbsoluteUri(true)->setLinkAccessRestrictedPages(true)->setArguments(
+                        ['logintype' => 'login']
+                    )->setUseCacheHash(false)->build();
                 }
 
                 HttpUtility::redirect($targetUrl);
@@ -58,7 +62,7 @@ class AuthenticationController extends ActionController
                     // an alert if IP authentication is not possible. This is a function for debugging
                     // purposes.
                     $this->view->assign('currentIp', GeneralUtility::getIndpEnv('REMOTE_ADDR'));
-                    $ipUsers = $this->feEntityService->findAllUsersWithIpAuthentication();
+                    $ipUsers = $this->authenticationService->findAllUsersWithIpAuthentication();
                     $allowedIpAddresses = [];
                     foreach ($ipUsers as $ipUser) {
                         $allowedIpAddresses[] = implode(',', $ipUser['tx_aoeipauth_ip']);
@@ -80,27 +84,4 @@ class AuthenticationController extends ActionController
         return $configuredRedirectPage;
     }
 
-    /**
-     * Finds all users with IP authentication enabled
-     *
-     * @param string $ip
-     *
-     * @return array
-     */
-    protected function findAllUsersByIpAuthentication($ip)
-    {
-        $users = $this->getFeEntityService()->findAllUsersAuthenticatedByIp($ip);
-        return $users;
-    }
-
-    /**
-     * @return \AOE\AoeIpauth\Domain\Service\FeEntityService
-     */
-    protected function getFeEntityService()
-    {
-        if (null === $this->feEntityService) {
-            $this->feEntityService = GeneralUtility::makeInstance(FeEntityService::class);
-        }
-        return $this->feEntityService;
-    }
 }
