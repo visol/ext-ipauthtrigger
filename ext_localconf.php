@@ -16,8 +16,6 @@ defined('TYPO3') || die();
         ]
     );
 
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_ipauthtrigger_async'] = \Visol\Ipauthtrigger\Eid\AsyncTrigger::class . '::main';
-
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\AOE\AoeIpauth\Typo3\Service\Authentication::class] = [
         'className' => \Visol\Ipauthtrigger\Xclass\AoeIpauth\Typo3\Service\Authentication::class
     ];
