@@ -19,15 +19,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
+use Visol\Ipauthtrigger\Service\AuthenticationService;
 
 class AuthenticationController extends ActionController
 {
 
-    /**
-     * @var \Visol\Ipauthtrigger\Service\AuthenticationService
-     * @inject
-     */
-    protected $authenticationService = null;
+    protected ?AuthenticationService $authenticationService = null;
+
+    public function injectAuthenticationService(AuthenticationService $authenticationService)
+    {
+        $this->authenticationService = $authenticationService;
+    }
 
     /**
      * @return void
@@ -52,7 +54,7 @@ class AuthenticationController extends ActionController
                         (int)$configuredRedirectPage
                     )->setCreateAbsoluteUri(true)->setLinkAccessRestrictedPages(true)->setArguments(
                         ['logintype' => 'login']
-                    )->setUseCacheHash(false)->build();
+                    )->build();
                 }
 
                 HttpUtility::redirect($targetUrl);

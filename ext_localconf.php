@@ -1,23 +1,26 @@
 <?php
-if (!defined('TYPO3_MODE')) {
-    die('Access denied.');
-}
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Visol.' . $_EXTKEY,
-    'Ipauthtrigger',
-    [
-        'Authentication' => 'index',
+defined('TYPO3') || die();
 
-    ],
-    // non-cacheable actions
-    [
-        'Authentication' => 'index',
-    ]
-);
+(function ($extKey = 'ipauthtrigger') {
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Visol.' . $extKey,
+        'Ipauthtrigger',
+        [
+            'Authentication' => 'index',
 
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_ipauthtrigger_async'] = 'EXT:ipauthtrigger/Classes/Eid/AsyncTrigger.php';
+        ],
+        // non-cacheable actions
+        [
+            'Authentication' => 'index',
+        ]
+    );
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['AOE\\AoeIpauth\\Typo3\\Service\\Authentication'] = [
-    'className' => \Visol\Ipauthtrigger\Xclass\AoeIpauth\Typo3\Service\Authentication::class
-];
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_ipauthtrigger_async'] = \Visol\Ipauthtrigger\Eid\AsyncTrigger::class . '::main';
+
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\AOE\AoeIpauth\Typo3\Service\Authentication::class] = [
+        'className' => \Visol\Ipauthtrigger\Xclass\AoeIpauth\Typo3\Service\Authentication::class
+    ];
+})();
+
+

@@ -64,7 +64,3 @@ class AsyncTrigger
         exit;
     }
 }
-
-/** @var AsyncTrigger $asyncTriggerInstance */
-$asyncTriggerInstance = GeneralUtility::makeInstance(AsyncTrigger::class);
-$asyncTriggerInstance->main();
